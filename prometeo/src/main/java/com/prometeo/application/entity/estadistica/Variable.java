@@ -1,5 +1,8 @@
 package com.prometeo.application.entity.estadistica;
 
+import java.util.List;
+import java.util.Objects;
+
 /**
  *
  * @author L
@@ -7,11 +10,11 @@ package com.prometeo.application.entity.estadistica;
  */
 public abstract sealed class Variable<E> permits Ordinal, Continua, Discreta, Nominal {
     private final String nombre;
-    private final E valor;
+    private final List<E> valor;
     private final TipoVariable tipoVariable;
     private final SubtipoVariable subtipoVariable;
 
-    public Variable(String nombre, SubtipoVariable subtipoVariable, E valor) {
+    public Variable(String nombre, SubtipoVariable subtipoVariable, List<E> valor) {
         this.nombre = nombre;
         this.valor = valor;
         this.subtipoVariable = subtipoVariable;
@@ -26,9 +29,14 @@ public abstract sealed class Variable<E> permits Ordinal, Continua, Discreta, No
         return nombre;
     }
 
-    public E getValor() {
-        return valor;
+    public List<E> getValor() {
+        return List.copyOf(valor);
     }
+
+    public boolean isEscalar() {
+        return valor.size() == 1;
+    }
+
     /**
     * Verifica si todas las variables en el arreglo comparten el mismo subtipo.
     *
@@ -55,7 +63,7 @@ public abstract sealed class Variable<E> permits Ordinal, Continua, Discreta, No
         if (variables.length <= 1) {
             return true;
         }
-        String subType = variables[0].getSubtipoVariable();
+        SubtipoVariable subType = variables[0].getSubtipoVariable();
         for (int i = 1; i < variables.length; i++) {
             if (!subType.equals(variables[i].getSubtipoVariable())) {
                 return false;
@@ -83,5 +91,17 @@ public abstract sealed class Variable<E> permits Ordinal, Continua, Discreta, No
     public enum TipoVariable {
         CUALITATIVA,
         CUANTITATIVA
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Variable<?> variable = (Variable<?>) o;
+        return Objects.equals(nombre, variable.nombre);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(nombre);
     }
 }
