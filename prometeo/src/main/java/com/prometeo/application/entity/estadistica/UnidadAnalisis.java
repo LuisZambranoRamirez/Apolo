@@ -4,24 +4,22 @@ import java.util.*;
 
 public abstract class UnidadAnalisis<I> {
     private final I id;
-    private final String subjectUnityAnalisis;
     private final Map<String, Variable<?>> attributes = new HashMap<>();
 
-    public UnidadAnalisis(I id, String subjectUnityAnalisis) {
+    public UnidadAnalisis(I id) {
         this.id = id;
-        this.subjectUnityAnalisis = subjectUnityAnalisis;
     }
 
     protected void addVariable(Variable<?> variables) {
          attributes.put(variables.getName(), variables);
     }
 
-    public Variable<?> getVariable(String variableName) {
-        return attributes.get(variableName);
+    public Optional<Variable<?>> getVariable(String variableName) {
+        return Optional.of(attributes.get(variableName));
     }
 
-    public String getSubjectUnityAnalisis() {
-        return subjectUnityAnalisis;
+    public String getClassName() {
+        return getClass().getName();
     }
 
     public Set<String> getAttributeNames() {

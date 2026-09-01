@@ -1,7 +1,6 @@
 package com.prometeo.application.entity.machineLearning;
 
-import com.prometeo.application.entity.estadistica.UnidadAnalisis;
-import com.prometeo.application.entity.estadistica.Variable;
+import com.prometeo.application.entity.estadistica.*;
 import com.prometeo.application.entity.math.VectorUtils;
 
 import java.util.*;
@@ -11,11 +10,34 @@ import java.util.*;
  * @author L Ojo: Falta agregar el metodo analisis ordinal
  */
 public class ModeloMachineLearning {
-    private final Map<UnidadAnalisis<?>, List<Double>> a = new HashMap<>();
+    private final Map<UnidadAnalisis<?>, Map<String, Double>> a = new HashMap<>();
 
     public ModeloMachineLearning(Set<UnidadAnalisis<?>> unidadAnalisis) {
+        UnidadAnalisis<?> claseReferencia = unidadAnalisis.iterator().next();
+        Set<String> attributes = claseReferencia.getAttributeNames();
 
-        init();
+        boolean chequeado = false;
+
+        for (String attribute : attributes) {
+            List<Variable<?>> va = new LinkedList<>();
+            for (UnidadAnalisis<?> unidad : unidadAnalisis) {
+                if (!chequeado && !claseReferencia.getClassName().equals(unidad.getClassName())) {
+                    throw new IllegalArgumentException("Error: Todas las unidades de análisis deben ser de la misma clase. Se esperaba: " + claseReferencia);
+                }
+                Variable<?> variable = unidad.getVariable(attribute);
+
+                switch (variable) {
+                    case Nominal nominal -> {
+                        // Aquí la variable 'nominal' ya está casteada
+                        System.out.println("Es nominal: " + nominal.getName());
+                    }
+                    case Ordinal ordinal -> { /* ... */ }
+                    case Continua continua -> { /* ... */ }
+                    case Discreta discreta -> { /* ... */ }
+                }
+                chequeado = true;
+            }
+        }
     }
     
     public Cancion[] recomendarCanciones() {
