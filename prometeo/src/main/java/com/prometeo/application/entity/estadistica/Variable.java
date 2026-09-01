@@ -9,86 +9,50 @@ import java.util.Objects;
  * @param <E>
  */
 public abstract sealed class Variable<E> permits Ordinal, Continua, Discreta, Nominal {
-    private final String nombre;
-    private final List<E> valor;
-    private final TipoVariable tipoVariable;
-    private final SubtipoVariable subtipoVariable;
+    private final String name;
+    private final List<E> value;
+    private final TypeVariable typeVariable;
+    private final SubTypeVariable subTypeVariable;
 
-    public Variable(String nombre, SubtipoVariable subtipoVariable, List<E> valor) {
-        this.nombre = nombre;
-        this.valor = valor;
-        this.subtipoVariable = subtipoVariable;
+    public Variable(String name, SubTypeVariable subTypeVariable, List<E> value) {
+        this.name = name;
+        this.value = value;
+        this.subTypeVariable = subTypeVariable;
 
-        this.tipoVariable = switch (subtipoVariable) {
-            case NOMINAL, ORDINAL -> TipoVariable.CUALITATIVA;
-            case DISCRETA, CONTINUA -> TipoVariable.CUANTITATIVA;
+        this.typeVariable = switch (subTypeVariable) {
+            case NOMINAL, ORDINAL -> TypeVariable.CUALITATIVA;
+            case DISCRETA, CONTINUA -> TypeVariable.CUANTITATIVA;
         };
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public List<E> getValor() {
-        return List.copyOf(valor);
+    public List<E> getValue() {
+        return List.copyOf(value);
     }
 
     public boolean isEscalar() {
-        return valor.size() == 1;
+        return value.size() == 1;
     }
 
-    /**
-    * Verifica si todas las variables en el arreglo comparten el mismo subtipo.
-    *
-    * <p>
-    * Este método compara el subtipo (obtenido mediante {@code getSubtipo()}) del primer elemento del arreglo
-    * con el de los elementos restantes. Si todos los subtipos son iguales, se considera que la colección
-    * es uniforme.
-    * </p>
-    *
-    * <p>
-    * Si el arreglo contiene cero o un elemento, se considera automáticamente uniforme.
-    * </p>
-    *
-    * <b>Nota:</b> Este método no maneja valores {@code null} en el arreglo ni en los elementos del mismo.
-    * Se asume que todos los elementos son no nulos.
-    *
-    * @param variables Arreglo de objetos {@code Variable} a evaluar.
-    * @return {@code true} si todas las variables tienen el mismo subtipo, o si el arreglo tiene 0 o 1 elemento;
-    *         {@code false} si se encuentra al menos un subtipo diferente.
-    *
-    * @throws NullPointerException si el arreglo o alguno de sus elementos es {@code null}.
-    */
-    public static boolean isUniformVariableSubType(Variable[] variables) {
-        if (variables.length <= 1) {
-            return true;
-        }
-        SubtipoVariable subType = variables[0].getSubtipoVariable();
-        for (int i = 1; i < variables.length; i++) {
-            if (!subType.equals(variables[i].getSubtipoVariable())) {
-                return false;
-            }
-        }
-
-        return true;
+    public TypeVariable getTypeVariable() {
+        return typeVariable;
     }
 
-    public TipoVariable getTipoVariable() {
-        return tipoVariable;
+    public SubTypeVariable getSubTypeVariable() {
+        return subTypeVariable;
     }
 
-    public SubtipoVariable getSubtipoVariable() {
-        return subtipoVariable;
-    }
-
-    public enum SubtipoVariable {
+    public enum SubTypeVariable {
         NOMINAL,
         ORDINAL,
         DISCRETA,
         CONTINUA
     }
 
-    public enum TipoVariable {
+    public enum TypeVariable {
         CUALITATIVA,
         CUANTITATIVA
     }
@@ -97,11 +61,11 @@ public abstract sealed class Variable<E> permits Ordinal, Continua, Discreta, No
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Variable<?> variable = (Variable<?>) o;
-        return Objects.equals(nombre, variable.nombre);
+        return Objects.equals(name, variable.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(nombre);
+        return Objects.hashCode(name);
     }
 }

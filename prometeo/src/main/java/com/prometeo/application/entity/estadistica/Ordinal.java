@@ -6,6 +6,6 @@ package com.prometeo.application.entity.estadistica;
  */
 public non-sealed class Ordinal extends Variable<String> {
     public Ordinal(String nombre, String valor) {
-        super(nombre, SubtipoVariable.ORDINAL, valor);
+        super(nombre, SubTypeVariable.ORDINAL, valor);
     }
 }
