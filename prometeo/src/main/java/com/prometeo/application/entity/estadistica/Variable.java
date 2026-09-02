@@ -1,7 +1,7 @@
 package com.prometeo.application.entity.estadistica;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  *
@@ -10,11 +10,11 @@ import java.util.Objects;
  */
 public abstract sealed class Variable<E> permits Ordinal, Continua, Discreta, Nominal {
     private final String name;
-    private final List<E> value;
+    private final E value;
     private final TypeVariable typeVariable;
     private final SubTypeVariable subTypeVariable;
 
-    public Variable(String name, SubTypeVariable subTypeVariable, List<E> value) {
+    public Variable(String name, SubTypeVariable subTypeVariable, E value) {
         this.name = name;
         this.value = value;
         this.subTypeVariable = subTypeVariable;
@@ -29,12 +29,15 @@ public abstract sealed class Variable<E> permits Ordinal, Continua, Discreta, No
         return name;
     }
 
-    public List<E> getValue() {
-        return List.copyOf(value);
+    public E getValue() {
+        return value;
     }
 
     public boolean isEscalar() {
-        return value.size() == 1;
+        if (this instanceof Nominal nominal) {
+            return nominal.getValue().size() == 1;
+        }
+        return true;
     }
 
     public TypeVariable getTypeVariable() {

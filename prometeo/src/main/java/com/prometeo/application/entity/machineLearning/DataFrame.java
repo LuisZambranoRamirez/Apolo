@@ -10,36 +10,35 @@ import java.util.Set;
 
 public class DataFrame {
     private final Set<UnidadAnalisis<?>> unidadAnalises;
-    private final Set<String> namesAttributes;
+    private final Set<String> attributesNames;
 
     public DataFrame(Set<UnidadAnalisis<?>> unidadAnalises) {
         UnidadAnalisis<?> claseReferencia = unidadAnalises.iterator().next();
 
         for (UnidadAnalisis<?> unidad : unidadAnalises) {
-            if (!claseReferencia.getClassName().equals(unidad.getClassName())) {
+            if (!claseReferencia.hasSameStructure(unidad)) {
                 throw new IllegalArgumentException("Error: Todas las unidades de análisis deben ser de la misma clase. Se esperaba: " + claseReferencia);
             }
         }
 
         this.unidadAnalises = unidadAnalises;
-        this.namesAttributes = claseReferencia.getAttributeNames();
+        this.attributesNames = claseReferencia.getAttributeNames();
     }
 
     public List<Variable<?>> getVariable(String attribute) {
-        List<Variable<?>> a = new ArrayList<>(unidadAnalises.size());
-        for (UnidadAnalisis<?> unidad : unidadAnalises) {
-            a.add(unidad.getVariable(attribute));
+        if (attribute == null || !attributesNames.contains(attribute)) {
+            return List.of();
         }
-        return a;
+
+        List<Variable<?>> variables = new ArrayList<>(unidadAnalises.size());
+
+        for (UnidadAnalisis<?> unidad : unidadAnalises) {
+            variables.add(unidad.getVariable(attribute).orElseThrow());
+
+        }
+
+        return variables;
     }
 
-    public Set<String> getUniqueValues(String attributes) {
-        Set<String> a = new HashSet<>(unidadAnalises.size());
-        for (UnidadAnalisis<?> unidad : unidadAnalises) {
-            for (String )
-            a.add(unidad.getVariable(attributes).getValue());
-        }
-        return a;
-    }
 
 }

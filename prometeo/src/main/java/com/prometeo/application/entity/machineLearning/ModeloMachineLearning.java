@@ -21,9 +21,6 @@ public class ModeloMachineLearning {
         for (String attribute : attributes) {
             List<Variable<?>> va = new LinkedList<>();
             for (UnidadAnalisis<?> unidad : unidadAnalisis) {
-                if (!chequeado && !claseReferencia.getClassName().equals(unidad.getClassName())) {
-                    throw new IllegalArgumentException("Error: Todas las unidades de análisis deben ser de la misma clase. Se esperaba: " + claseReferencia);
-                }
                 Variable<?> variable = unidad.getVariable(attribute);
 
                 switch (variable) {
