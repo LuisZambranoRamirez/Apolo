@@ -3,71 +3,91 @@ package com.prometeo.application.entity.statistics;
 import com.prometeo.application.entity.math.MathUtils;
 
 /**
- *
- * @author L
+ * Utility class for statistical calculations.
  */
-public class EstadisticaUtils {
-    
+public class StatisticsUtils {
+
     /**
-    * Calcula la varianza de un conjunto de datos.
-    *
-    * @param data        arreglo de valores numéricos sobre los cuales se calculará la varianza.
-    * @param esMuestral  si es true, calcula la varianza muestral (dividiendo entre n-1);
-    *                    si es false, calcula la varianza poblacional (dividiendo entre n).
-    * @return            la varianza calculada del arreglo de datos.
-    * @throws IllegalArgumentException si el arreglo es null o tiene menos de dos elementos.
-    */
-    public static double calcularVarianza(double[] data, boolean esMuestral) {
+     * Calculates the variance of a dataset.
+     *
+     * @param data the array of numerical values used to calculate the variance
+     * @param isSample if true, calculates the sample variance (dividing by n - 1);
+     *                 if false, calculates the population variance (dividing by n)
+     * @return the calculated variance of the dataset
+     * @throws IllegalArgumentException if the array is null or contains fewer than two elements
+     */
+    public static double calculateVariance(double[] data, boolean isSample) {
         if (data == null || data.length < 2) {
-            throw new IllegalArgumentException("El arreglo debe contener al menos dos elementos.");
+            throw new IllegalArgumentException(
+                    "The array must contain at least two elements."
+            );
         }
 
-        double avg = MathUtils.avg(data);
-        double sumaCuadrados = 0.0;
+        double average = MathUtils.avg(data);
+        double sumOfSquares = 0.0;
 
-        for (double num : data) {
-            sumaCuadrados += Math.pow(num - avg, 2);
+        for (double value : data) {
+            sumOfSquares += Math.pow(value - average, 2);
         }
 
-        return esMuestral ? sumaCuadrados / (data.length - 1) : sumaCuadrados / data.length;
+        return isSample
+                ? sumOfSquares / (data.length - 1)
+                : sumOfSquares / data.length;
     }
 
     /**
-    * Calcula la desviación estándar de un conjunto de datos.
-    *
-    * @param data        arreglo de valores numéricos sobre los cuales se calculará la desviación estándar.
-    * @param esMuestral  si es true, calcula la desviación estándar muestral;
-    *                    si es false, calcula la desviación estándar poblacional.
-    * @return            la desviación estándar calculada del arreglo de datos.
-    * @throws IllegalArgumentException si el arreglo es null o tiene menos de dos elementos (se propaga desde calcularVarianza).
-    */
-    public static double calcularDesviacionEstandar(double[] data, boolean esMuestral) {
-        return Math.sqrt(calcularVarianza(data, esMuestral));
+     * Calculates the standard deviation of a dataset.
+     *
+     * @param data the array of numerical values used to calculate the standard deviation
+     * @param isSample if true, calculates the sample standard deviation;
+     *                 if false, calculates the population standard deviation
+     * @return the calculated standard deviation of the dataset
+     * @throws IllegalArgumentException if the array is null or contains fewer than two elements
+     */
+    public static double calculateStandardDeviation(double[] data, boolean isSample) {
+        return Math.sqrt(calculateVariance(data, isSample));
     }
-    
-    public static double[] minMaxEstandarizacion(double[] data) {
+
+    /**
+     * Normalizes the data using min-max normalization.
+     *
+     * @param data the array of numerical values to normalize
+     * @return a new array containing the normalized values in the range [0, 1]
+     * @throws IllegalArgumentException if the array is null or empty,
+     *                                  or if all values are equal
+     */
+    public static double[] minMaxNormalization(double[] data) {
         if (data == null || data.length == 0) {
-            throw new IllegalArgumentException("El arreglo no puede ser null o vacío.");
+            throw new IllegalArgumentException(
+                    "The array cannot be null or empty."
+            );
         }
 
-        double min = data[0]; 
+        double min = data[0];
         double max = data[0];
 
-        for (double num : data) {
-            if (num < min) min = num;
-            if (num > max) max = num;
+        for (double value : data) {
+            if (value < min) {
+                min = value;
+            }
+
+            if (value > max) {
+                max = value;
+            }
         }
 
         if (min == max) {
-            throw new IllegalArgumentException("Todos los valores son iguales, no se puede normalizar.");
+            throw new IllegalArgumentException(
+                    "All values are equal; normalization cannot be performed."
+            );
         }
 
-        double[] normalizado = new double[data.length];
+        double[] normalizedData = new double[data.length];
+
         for (int i = 0; i < data.length; i++) {
-            normalizado[i] = (data[i] - min) / (max - min);
+            normalizedData[i] = (data[i] - min) / (max - min);
         }
 
-        return normalizado;
+        return normalizedData;
     }
-    
 }
