@@ -8,6 +8,7 @@ import java.util.Objects;
  * @param <E> the type of value stored by the variable
  */
 public abstract sealed class Variable<E>
+        implements Named
         permits Ordinal, Continuous, Discrete, Nominal {
 
     private final String name;
@@ -25,20 +26,13 @@ public abstract sealed class Variable<E>
             case DISCRETE, CONTINUOUS -> VariableType.QUANTITATIVE;
         };
     }
-
+    @Override
     public String getName() {
         return name;
     }
 
     public E getValue() {
         return value;
-    }
-
-    public boolean isScalar() {
-        if (this instanceof Nominal nominal) {
-            return nominal.getValue().size() == 1;
-        }
-        return true;
     }
 
     public VariableType getVariableType() {

@@ -1,43 +1,45 @@
 package com.prometeo.application.entity.machineLearning;
 
-import com.prometeo.application.entity.estadistica.UnidadAnalisis;
-import com.prometeo.application.entity.estadistica.Variable;
+import com.prometeo.application.entity.statistics.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class DataFrame {
-    private final Set<UnidadAnalisis<?>> unidadAnalises;
-    private final Set<String> attributesNames;
+public class DataFrame<I> {
+    private final Set<AnalysisUnit<I>> analysisUnits;
+    private final Map<Named, Set<String>> variableNominalValues = new HashMap<>();
 
-    public DataFrame(Set<UnidadAnalisis<?>> unidadAnalises) {
-        UnidadAnalisis<?> claseReferencia = unidadAnalises.iterator().next();
+    public DataFrame(Set<AnalysisUnit<I>> analysisUnits) {
+        if (analysisUnits.isEmpty()) {
+            throw new IllegalArgumentException("Analysis units cannot be empty");
+        }
 
-        for (UnidadAnalisis<?> unidad : unidadAnalises) {
-            if (!claseReferencia.hasSameStructure(unidad)) {
-                throw new IllegalArgumentException("Error: Todas las unidades de análisis deben ser de la misma clase. Se esperaba: " + claseReferencia);
+        AnalysisUnit<I> referenceUnit = analysisUnits.iterator().next();
+
+        for (Nominal nominalVariable : referenceUnit.getNominalVariables()) {
+            variableNominalValues.put(nominalVariable, new HashSet<>());
+        }
+
+        for (AnalysisUnit<I> analysisUnit : analysisUnits) {
+            if (!referenceUnit.hasSameStructure(analysisUnit)) {
+                throw new IllegalArgumentException(
+                        "All analysis units must have the same structure. " +
+                                "Expected: " + referenceUnit.getClass().getName()
+                );
+            }
+
+            for (Nominal nominalVariable : analysisUnit.getNominalVariables()) {
+                Set<String> values = variableNominalValues.get(nominalVariable);
+
+                values.addAll(nominalVariable.getValue());
             }
         }
 
-        this.unidadAnalises = unidadAnalises;
-        this.attributesNames = claseReferencia.getAttributeNames();
+        this.analysisUnits = analysisUnits;
     }
 
-    public List<Variable<?>> getVariable(String attribute) {
-        if (attribute == null || !attributesNames.contains(attribute)) {
-            return List.of();
-        }
-
-        List<Variable<?>> variables = new ArrayList<>(unidadAnalises.size());
-
-        for (UnidadAnalisis<?> unidad : unidadAnalises) {
-            variables.add(unidad.getVariable(attribute).orElseThrow());
-
-        }
-
-        return variables;
+    public Set<String> getNominalValues(Named variable) {
+        Set<String> values = variableNominalValues.get(variable);
+        return new HashSet<>(values);
     }
 
 
