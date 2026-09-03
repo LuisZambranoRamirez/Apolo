@@ -1,8 +1,10 @@
 package com.prometeo.application.entity.statistics;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
-public abstract class AnalysisUnits<I> {
+public abstract class AnalysisUnit<I> {
 
     private final I id;
 
@@ -13,7 +15,7 @@ public abstract class AnalysisUnits<I> {
     private final Set<Continuous> continuousVariables = new HashSet<>();
     private final Set<Discrete> discreteVariables = new HashSet<>();
 
-    public AnalysisUnits(I id) {
+    public AnalysisUnit(I id) {
         this.id = id;
     }
 
@@ -69,10 +71,12 @@ public abstract class AnalysisUnits<I> {
         return new HashSet<>(discreteVariables);
     }
 
-    public boolean hasSameStructure(AnalysisUnits<?> other) {
-        if (other == null) return false;
+    public boolean hasSameStructure(AnalysisUnit<?> other) {
+        if (other == null) {
+            return false;
+        }
 
-        // Same concrete UnidadAnalisis class
+        // Same concrete AnalysisUnit class
         if (!getClass().equals(other.getClass())) {
             return false;
         }
@@ -96,8 +100,11 @@ public abstract class AnalysisUnits<I> {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        AnalysisUnits<?> that = (AnalysisUnits<?>) o;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        AnalysisUnit<?> that = (AnalysisUnit<?>) o;
         return Objects.equals(id, that.id);
     }
 

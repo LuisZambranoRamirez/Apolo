@@ -3,24 +3,26 @@ package com.prometeo.application.entity.statistics;
 import java.util.Objects;
 
 /**
+ * Represents a statistical variable.
  *
- * @author L
- * @param <E>
+ * @param <E> the type of value stored by the variable
  */
-public abstract sealed class Variable<E> permits Ordinal, Continuous, Discrete, Nominal {
+public abstract sealed class Variable<E>
+        permits Ordinal, Continuous, Discrete, Nominal {
+
     private final String name;
     private final E value;
-    private final TypeVariable typeVariable;
-    private final SubTypeVariable subTypeVariable;
+    private final VariableType variableType;
+    private final VariableSubtype variableSubtype;
 
-    public Variable(String name, SubTypeVariable subTypeVariable, E value) {
+    public Variable(String name, VariableSubtype variableSubtype, E value) {
         this.name = name;
         this.value = value;
-        this.subTypeVariable = subTypeVariable;
+        this.variableSubtype = variableSubtype;
 
-        this.typeVariable = switch (subTypeVariable) {
-            case NOMINAL, ORDINAL -> TypeVariable.CUALITATIVA;
-            case DISCRETA, CONTINUA -> TypeVariable.CUANTITATIVA;
+        this.variableType = switch (variableSubtype) {
+            case NOMINAL, ORDINAL -> VariableType.CATEGORICAL;
+            case DISCRETE, CONTINUOUS -> VariableType.QUANTITATIVE;
         };
     }
 
@@ -32,36 +34,39 @@ public abstract sealed class Variable<E> permits Ordinal, Continuous, Discrete, 
         return value;
     }
 
-    public boolean isEscalar() {
+    public boolean isScalar() {
         if (this instanceof Nominal nominal) {
             return nominal.getValue().size() == 1;
         }
         return true;
     }
 
-    public TypeVariable getTypeVariable() {
-        return typeVariable;
+    public VariableType getVariableType() {
+        return variableType;
     }
 
-    public SubTypeVariable getSubTypeVariable() {
-        return subTypeVariable;
+    public VariableSubtype getVariableSubtype() {
+        return variableSubtype;
     }
 
-    public enum SubTypeVariable {
+    public enum VariableSubtype {
         NOMINAL,
         ORDINAL,
-        DISCRETA,
-        CONTINUA
+        DISCRETE,
+        CONTINUOUS
     }
 
-    public enum TypeVariable {
-        CUALITATIVA,
-        CUANTITATIVA
+    public enum VariableType {
+        CATEGORICAL,
+        QUANTITATIVE
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         Variable<?> variable = (Variable<?>) o;
         return Objects.equals(name, variable.name);
     }
