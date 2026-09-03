@@ -1,4 +1,4 @@
-package com.prometeo.application.entity.estadistica;
+package com.prometeo.application.entity.statistics;
 
 import com.prometeo.application.entity.math.MathUtils;
 

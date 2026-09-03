@@ -1,14 +1,13 @@
-package com.prometeo.application.entity.estadistica;
+package com.prometeo.application.entity.statistics;
 
 import java.util.Objects;
-import java.util.Set;
 
 /**
  *
  * @author L
  * @param <E>
  */
-public abstract sealed class Variable<E> permits Ordinal, Continua, Discreta, Nominal {
+public abstract sealed class Variable<E> permits Ordinal, Continuous, Discrete, Nominal {
     private final String name;
     private final E value;
     private final TypeVariable typeVariable;

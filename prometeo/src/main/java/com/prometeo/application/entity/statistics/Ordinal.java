@@ -1,4 +1,4 @@
-package com.prometeo.application.entity.estadistica;
+package com.prometeo.application.entity.statistics;
 
 /**
  *
