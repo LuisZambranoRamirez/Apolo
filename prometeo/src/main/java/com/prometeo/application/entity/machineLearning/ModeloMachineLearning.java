@@ -18,6 +18,10 @@ public class ModeloMachineLearning<I> {
             throw new IllegalArgumentException("Analysis units cannot be empty");
         }
 
+        for (AnalysisUnit<I> analysisUnit : analysisUnits) {
+            analysisUnit.initializeVariables();
+        }
+
         this.dataFrame = new DataFrame<>(analysisUnits);
 
         for (AnalysisUnit<I> analysisUnit : analysisUnits) {

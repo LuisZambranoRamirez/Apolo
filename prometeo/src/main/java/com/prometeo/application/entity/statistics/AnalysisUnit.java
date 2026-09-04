@@ -90,7 +90,7 @@ public abstract class AnalysisUnit<I> {
         return id;
     }
 
-    protected abstract void extractVariables();
+    public abstract void initializeVariables();
 
     @Override
     public boolean equals(Object o) {

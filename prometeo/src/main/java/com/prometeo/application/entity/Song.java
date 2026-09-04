@@ -95,11 +95,10 @@ public class Song extends AnalysisUnit<SongId> {
 
     public Song(SongId id) {
         super(id);
-        this.id = id;
     }
 
     @Override
-    protected void extractVariables() {
+    public void initializeVariables() {
         try {
             addVariable(new Continuous("songPopularity", songPopularity));
             addVariable(new Continuous("danceability", danceability));
