@@ -1,17 +1,21 @@
 package com.prometeo.application.entity;
 
+import com.prometeo.application.entity.statistics.AnalysisUnit;
+import com.prometeo.application.entity.statistics.Continuous;
+import com.prometeo.application.entity.statistics.Nominal;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
 @Entity
 @Table(name = "song")
-public class Song {
+public class Song extends AnalysisUnit<SongId> {
 
     @EmbeddedId
     private SongId id;
@@ -86,11 +90,51 @@ public class Song {
     private Set<Subgenre> subgenres = new HashSet<>();
 
     public Song() {
+        super(new SongId());
     }
 
     public Song(SongId id) {
+        super(id);
         this.id = id;
     }
+
+    @Override
+    protected void extractVariables() {
+        try {
+            addVariable(new Continuous("songPopularity", songPopularity));
+            addVariable(new Continuous("danceability", danceability));
+            addVariable(new Continuous("energy", energy));
+            addVariable(new Continuous("key", key));
+            addVariable(new Continuous("loudness", loudness));
+            addVariable(new Continuous("mode", mode));
+            addVariable(new Continuous("speechiness", speechiness));
+            addVariable(new Continuous("acousticness", acousticness));
+            addVariable(new Continuous("instrumentalness", instrumentalness));
+            addVariable(new Continuous("liveness", liveness));
+            addVariable(new Continuous("valence", valence));
+            addVariable(new Continuous("tempo", tempo));
+            addVariable(new Continuous("durationMs", durationMs));
+
+            Set<String> genreNames = genres.stream()
+                    .map(Genre::getGenre)
+                    .collect(Collectors.toSet());
+
+            addVariable(new Nominal("genres", genreNames));
+
+            Set<String> subgenreNames = subgenres.stream()
+                    .map(Subgenre::getSubgenre)
+                    .collect(Collectors.toSet());
+
+            addVariable(new Nominal("subgenres", subgenreNames));
+
+        } catch (Exception e) {
+            throw new IllegalStateException(
+                    "Error extracting Song variables.",
+                    e
+            );
+        }
+    }
+
 
 }
 

@@ -41,4 +41,13 @@ public class SongController {
     ) {
         songService.delete(songName, artist);
     }
+
+    @GetMapping("/{artist}/{songName}/similar")
+    public List<Song> getSimilarSongs(
+            @PathVariable String artist,
+            @PathVariable String songName
+    ) {
+        return songService.findSimilarSongs(songName, artist);
+    }
+
 }
