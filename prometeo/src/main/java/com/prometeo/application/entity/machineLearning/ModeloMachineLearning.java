@@ -18,10 +18,6 @@ public class ModeloMachineLearning<I> {
             throw new IllegalArgumentException("Analysis units cannot be empty");
         }
 
-        for (AnalysisUnit<I> analysisUnit : analysisUnits) {
-            analysisUnit.initializeVariables();
-        }
-
         this.dataFrame = new DataFrame<>(analysisUnits);
 
         for (AnalysisUnit<I> analysisUnit : analysisUnits) {
@@ -59,7 +55,7 @@ public class ModeloMachineLearning<I> {
         return features;
     }
 
-    public List<AnalysisUnit<I>> findSimilarAnalysisUnits(AnalysisUnit<I> analysisUnit) {
+    public List<SimilarityResult<I>> findSimilarAnalysisUnits(AnalysisUnit<I> analysisUnit) {
         if (!dataFrame.haveSameStructure(analysisUnit)) {
             throw new IllegalArgumentException(
                     "The analysis unit has a different structure."
@@ -68,7 +64,7 @@ public class ModeloMachineLearning<I> {
 
         List<Double> targetFeatures = convertToFeatureVector(analysisUnit);
 
-        List<Map.Entry<AnalysisUnit<I>, Double>> similarAnalysisUnits = new ArrayList<>();
+        List<SimilarityResult<I>> similarAnalysisUnits = new ArrayList<>();
 
         for (Map.Entry<AnalysisUnit<I>, List<Double>> entry : featureMatrix.entrySet()) {
 
@@ -81,7 +77,7 @@ public class ModeloMachineLearning<I> {
             );
 
             similarAnalysisUnits.add(
-                    new AbstractMap.SimpleEntry<>(
+                    new SimilarityResult<I>(
                             currentAnalysisUnit,
                             similarity
                     )
@@ -90,19 +86,15 @@ public class ModeloMachineLearning<I> {
 
         // Highest similarity first
         similarAnalysisUnits.sort(
-                Map.Entry.<AnalysisUnit<I>, Double>comparingByValue().reversed()
+                Comparator.comparing(SimilarityResult<I>::similarity).reversed()
         );
 
-        List<AnalysisUnit<I>> result = new ArrayList<>();
-
-        for (Map.Entry<AnalysisUnit<I>, Double> entry : similarAnalysisUnits) {
-            result.add(entry.getKey());
-        }
-
-        return result;
+        return similarAnalysisUnits;
     }
 
-    public void imprimirMatrizCaracteristicas() {
-
+    public record SimilarityResult<I>(
+            AnalysisUnit<I> analysisUnit,
+            Double similarity
+    ) {
     }
 }

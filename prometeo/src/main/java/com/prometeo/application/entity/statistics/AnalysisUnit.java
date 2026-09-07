@@ -4,18 +4,12 @@ import java.util.*;
 
 public abstract class AnalysisUnit<I> {
 
-    private final I id;
-
     private final Set<Named> variableNames = new HashSet<>();
 
     private final Set<Nominal> nominalVariables = new LinkedHashSet<>();
     private final Set<Ordinal> ordinalVariables = new LinkedHashSet<>();
     private final Set<Continuous> continuousVariables = new LinkedHashSet<>();
     private final Set<Discrete> discreteVariables = new LinkedHashSet<>();
-
-    public AnalysisUnit(I id) {
-        this.id = id;
-    }
 
     protected void addVariable(Nominal variable) throws Exception {
         if (variableNames.contains(variable)) {
@@ -86,9 +80,7 @@ public abstract class AnalysisUnit<I> {
                 && discreteVariables.equals(other.discreteVariables);
     }
 
-    public I getId() {
-        return id;
-    }
+    public abstract I getId();
 
     public abstract void initializeVariables();
 
@@ -99,11 +91,11 @@ public abstract class AnalysisUnit<I> {
         }
 
         AnalysisUnit<?> that = (AnalysisUnit<?>) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(getId());
     }
 }

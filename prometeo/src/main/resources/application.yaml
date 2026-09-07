@@ -3,15 +3,11 @@ spring:
     name: prometeo
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/apolo
+    url: jdbc:postgresql://localhost:5432/prometeo
     username: postgres
-    password: drakotako1234
+    password: Drakotako147258369#
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true

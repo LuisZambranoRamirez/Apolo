@@ -89,18 +89,20 @@ public class Song extends AnalysisUnit<SongId> {
     )
     private Set<Subgenre> subgenres = new HashSet<>();
 
-    public Song() {
-        super(new SongId());
+    @Override
+    public SongId getId() {
+        return id;
     }
 
-    public Song(SongId id) {
-        super(id);
+    @PostLoad
+    private void onLoad() {
+        initializeVariables();
     }
 
     @Override
     public void initializeVariables() {
         try {
-            addVariable(new Continuous("songPopularity", songPopularity));
+            //addVariable(new Continuous("songPopularity", songPopularity));
             addVariable(new Continuous("danceability", danceability));
             addVariable(new Continuous("energy", energy));
             addVariable(new Continuous("key", key));

@@ -43,11 +43,22 @@ public class SongController {
     }
 
     @GetMapping("/similar")
-    public List<Song> getSimilarSongs(
+    public List<SongService.SimilarSongDTO> getSimilarSongs(
             @RequestParam String artist,
             @RequestParam String songName
     ) {
-        return songService.findSimilarSongs(songName, artist);
+        List<SongService.SimilarSongDTO> songs =
+                songService.findSimilarSongs(songName, artist);
+
+        int maxSize = 100;
+
+        songs.stream()
+                .limit(maxSize)
+                .forEach(System.out::println);
+
+        return songs.stream()
+                .limit(maxSize)
+                .toList();
     }
 
 }
